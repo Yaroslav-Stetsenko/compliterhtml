@@ -1,22 +1,23 @@
-def make_html(content, file_name = 'index', bypass_html = false)
-  bypass_html ? content : content.gsub!(%r{<([^>]+?)([^>]*?)>(.*?)</\1>}, '')
-  output_file = File.expand_path("#{file_name}.html")
-  file_html = <<~HTML
-    <!DOCTYPE html>
-    <html>
-      <head>
-        <title>Created HTML</title>
-        <style type="text/css">
-        body {
-          font-size: 14px;
-          text-align: left;
-        }
-        </style>
-      </head>
-      <body>
-      #{content}
-      </body>
-    </html>
-  HTML
-  File.open(output_file, 'w') { |f| f.write file_html }
+class GetHtml
+  def get(content, bypass_html = true, file_name = 'index.html')
+    markup = gets.chomp
+    markup = content.gsub!(/[<>]/, '') if bypass_html
+#    markup = content if bypass_html
+    
+    f = File.new("#{Dir.pwd}/#{file_name}", "w+")
+    f.puts "<!DOCTYPE HTML>"
+    f.puts '<html lang="en">'
+    f.puts "  <head>"
+    f.puts '    <meta charset="UTF-8">'
+    f.puts "    <title>My Pet</title>"
+    f.puts "  </head>"
+    f.puts "  <body>"
+    f.puts "    <p>#{markup}</p>"
+    f.puts "  </body>"
+    f.puts "</html>"
+    f.close
+
+  end
 end
+
+GetHtml.new.get("markup", true)
