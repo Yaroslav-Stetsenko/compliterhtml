@@ -12,12 +12,14 @@ class GetHtml
     f.puts "    <title>My Pet</title>"
     f.puts "  </head>"
     f.puts "  <body>"
-    f.puts "    <p>#{markup}</p>"
+    f.puts "    <p>#{content}</p>"
     f.puts "  </body>"
     f.puts "</html>"
     f.close
 
   end
+
+  HTML
+  File.open(output_file, 'w') { |f| f.write file_html }
 end
 
-GetHtml.new.get("markup", true)
