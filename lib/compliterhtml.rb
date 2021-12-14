@@ -1,36 +1,22 @@
-require 'nokogiri'
-
-class MakeHtml
-  def make_html(content, bypass_html, file_name = 'index.html')
-    markup = content.gsub!(/[<>]/, '') if bypass_html == false
-    markup = content unless bypass_html == false
-
-    f = File.new("#{Dir.pwd}/#{file_name}", "w+")
-    f.puts "<!DOCTYPE html>"
-    f.puts "  <head>"
-    f.puts "    <meta charset='utf-8'>"
-    f.puts "    <title>My Tamago</title>"
-    f.puts "  </head>"
-    f.puts "  <body>"
-    f.puts "    <script>"
-    f.puts "      setInterval(()=>{ window.location.reload() }, 2000)"
-    f.puts "    </script>"
-    f.puts "    #{markup}"
-    f.puts "  </body>"
-    f.puts "</html>"
-    f.close
-  end
-
-  def update_html(content, file_name = 'index.html')
-    doc = File.open(file_name) { |f| Nokogiri::HTML(f) }
-    doc.at('body') << content
-
-    file = File.open(file_name, 'w+')
-    file.puts doc
-    file.close
-  end
-
-  def open_in_browser(file = 'index.html')
-    system("xdg-open #{Dir.pwd}/#{file}")
-  end
+def make_html(content, file_name = 'index', bypass_html = false)
+  bypass_html ? content : content.gsub!(%r{<([^>]+?)([^>]*?)>(.*?)</\1>}, '')
+  output_file = File.expand_path("#{file_name}.html")
+  file_html = <<~HTML
+    <!DOCTYPE html>
+    <html>
+      <head>
+        <title>Created HTML</title>
+        <style type="text/css">
+        body {
+          font-size: 14px;
+          text-align: left;
+        }
+        </style>
+      </head>
+      <body>
+      #{content}
+      </body>
+    </html>
+  HTML
+  File.open(output_file, 'w') { |f| f.write file_html }
 end
